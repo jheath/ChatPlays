@@ -35,7 +35,7 @@ def main_loop():
         else:
             score_roll()
             val = input('Play again?(y or n)\n')
-            if val == 'n':
+            if val == 'n' or val == 'N':
                 playing = False
             else:
                 resetrolls()
