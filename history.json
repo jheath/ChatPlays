@@ -1,8 +1,17 @@
 {
   "curUser": {
     "current": {
-      "remaining": "",
-      "score": ""
+      "remainingRolls": "",
+      "dice1": "",
+      "dice2": "",
+      "dice3": "",
+      "dice4": "",
+      "dice5": "",
+      "dice1Held": "",
+      "dice2Held": "",
+      "dice3Held": "",
+      "dice4Held": "",
+      "dice5Held": ""
     },
     "daily": {
       "score": "",
