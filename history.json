@@ -1,0 +1,40 @@
+{
+  "curUser": {
+    "current": {
+      "remainingRolls": "",
+      "dice1": "",
+      "dice2": "",
+      "dice3": "",
+      "dice4": "",
+      "dice5": "",
+      "dice1Held": "",
+      "dice2Held": "",
+      "dice3Held": "",
+      "dice4Held": "",
+      "dice5Held": ""
+    },
+    "daily": {
+      "score": "",
+      "numGames": ""
+    },
+    "top": {
+      "score": "",
+      "numGames": "",
+      "": {}
+    }
+  },
+  "top": {
+    "daily": {
+      "players": "",
+      "numUsers": "",
+      "user": "",
+      "score": ""
+    },
+    "all": {
+      "numPlays": "",
+      "numUsers": "",
+      "user": "",
+      "score": ""
+    }
+  }
+}
