@@ -1,8 +1,20 @@
+import sys
 import random
+import json
 
+
+# TODO: variable names are inconsistent, needs cleanup
 # var inits
-# dice[number][held value,dice value]
+debug = True
+# define input arguments
+argCount = len(sys.argv)
+args = sys.argv
+curUser = args[1]
+
+# this is value not case sensitive somehow
 heldValues = ["Not Held", "Held"]
+rollsleft = 3
+# dice[number][held value,dice value]
 dice = [[heldValues[0], 0],
         [heldValues[0], 0],
         [heldValues[0], 0],
@@ -10,7 +22,39 @@ dice = [[heldValues[0], 0],
         [heldValues[0], 0],
         [heldValues[0], 0]]
 
-rollsleft = 3
+# TODO: this should be a function
+# Open history file
+historyFile = "history.json"
+file = open(historyFile, "r")
+filedata = file.read()
+history = json.loads(filedata)
+
+# TODO: check for matching user data before processing
+
+# TODO: this should be a function
+# update roll from history
+if debug:
+    print("rollsleft:" + str(rollsleft))
+rollsleft = history[str(curUser)]["current"]["remainingRolls"]
+for thing in range(5):
+    diceField = "dice" + str(thing + 1)
+    # if dice[int(thing)][1] == 0:
+
+    # read state for player's dice
+    diceKeep = history[str(curUser)]["current"][str(diceField) + "Held"]
+    diceValue = history[str(curUser)]["current"][str(diceField)]
+    dice[thing][0] = str(diceKeep)
+    dice[thing][1] = str(diceValue)
+
+    if debug:
+        print("dice#: " + str(thing + 1))
+        print("value: " + str(diceValue))
+        print("hold: " + str(diceKeep))
+        print("alldice: " + str(dice))
+        print("thisdice: " + str(dice[thing]))
+        print("dice1val: " + str(dice[thing][1]))
+        print(history[str(curUser)]["current"]["dice" + str(thing + 1)] + " - no match")
+        print("\n")
 
 
 # initialize dice
@@ -29,7 +73,7 @@ def main_loop():
     while playing:
         if rollsleft == 3:
             initial_roll()
-        elif rollsleft > 0:
+        elif int(rollsleft) > 0:
             user_check_dice()
             reroll()
         else:
