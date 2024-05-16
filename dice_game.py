@@ -71,9 +71,11 @@ def main_loop():
 
     playing = True
     while playing:
+        print("rollsleft: " + str(rollsleft))
         if rollsleft == 3:
             initial_roll()
         elif int(rollsleft) > 0:
+            # I think this disables interaction
             user_check_dice()
             reroll()
         else:
@@ -113,7 +115,7 @@ def reroll():
 
 def reducerolls():
     global rollsleft
-    rollsleft -= 1
+    rollsleft = int(rollsleft) - 1
 
 
 def resetrolls():
@@ -174,7 +176,7 @@ def score_roll():
         special = "straight"
     if score == 0:
         for x in range(5):
-            score += dice[x][1]
+            score += int(dice[x][1])
 
     # check for full house and set to 25 if it is less than the current score
     if score < 25:
@@ -198,8 +200,8 @@ def score_roll():
             score = 25
             special = fullhouse
 
-    # 4 of a kind
-    # 3 of a kind
+    # TODO:4 of a kind
+    # TODO:3 of a kind
 
     print("")
     if special != "":
