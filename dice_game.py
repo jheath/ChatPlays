@@ -75,9 +75,8 @@ def initial_roll():
 def main_loop():
     # split args and run function on each
     if debug:
-        print("rollsleft2: " + str(rollsleft))
         print("roll action:" + str(action))
-        print("roll lef:" + str(rollsleft))
+        print("rolls remaining:" + str(rollsleft))
         print("action:" + str(action) + "   " + (rollsleft))
     if action == "keep" or action == "drop":
         dicechange()
@@ -116,8 +115,7 @@ def main_loop():
 
 def dicechange():
     if debug:
-        print("write dice change")
-        print(len(args))
+        print("argument count:" + str(len(args)))
     if action == "keep" or action == 'drop':
         if len(args) > 3:
             holdnum = args[3].split(",")
@@ -125,18 +123,27 @@ def dicechange():
             if debug:
                 print("holdnum:" + str(holdnum))
                 print("y: " + str(y))
-                print(diceField)
-            # index out of range
+                # print("dice field: " + str(diceField))
             if int(y) < 6:
-                if dice[int(y)][0] == 0:
-                    # history[str(curUser)]["current"]["disk" + str(y) + "held"] = 0
-                    dice[int(y)][0] = 1
+                if debug:
+                    print("dice #1: " + str(y))
+                    print("dice all1: " + str(dice))
+                    print("hold value1: " + str(dice[int(y) - 1]))
+                if action == "keep":
+                        dice[(int(y) - 1)][0] = heldValues[1]
+                elif action == "drop":
+                        dice[(int(y) - 1)][0] = heldValues[0]
                 else:
-                    dice[int(y)][0] = 0
+                    print("didn't match keep/drop")
+                if debug:
+                    print("hold value2: " + str(dice[int(y) - 1]))
+                    print("hold: " + str(dice[int(y)][0]))
+                    print("value: " + str(dice[int(y)][1]))
+                    print("dice all2: " + str(dice))
 
 
 def writehistory():
-    # not sure if this prints dice or history or bothkj
+    # not sure if this prints dice or history or both
     print("write history")
 
 
