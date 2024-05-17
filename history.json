@@ -31,8 +31,8 @@
       "dice4": "6",
       "dice5": "2",
       "dice1Held": "Held",
-      "dice2Held": "Held",
-      "dice3Held": "Held",
+      "dice2Held": "Not Held",
+      "dice3Held": "Not Held",
       "dice4Held": "Held",
       "dice5Held": "Not Held"
     },
@@ -43,6 +43,29 @@
     "top": {
       "score": "45",
       "numGames": "3"
+    }
+  },
+  "erg": {
+    "current": {
+      "remainingRolls": "1",
+      "dice1": "2",
+      "dice2": "2",
+      "dice3": "1",
+      "dice4": "1",
+      "dice5": "3",
+      "dice1Held": "Held",
+      "dice2Held": "Held",
+      "dice3Held": "Held",
+      "dice4Held": "Held",
+      "dice5Held": "Not Held"
+    },
+    "daily": {
+      "score": "23",
+      "numGames": "34"
+    },
+    "top": {
+      "score": "50",
+      "numGames": "400"
     }
   },
   "top": {

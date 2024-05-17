@@ -5,13 +5,16 @@ import json
 
 # TODO: variable names are inconsistent, needs cleanup
 # var inits
-debug = True
+debug = False
 # define input arguments
 argCount = len(sys.argv)
 args = sys.argv
 curUser = args[1]
+action = args[2]
+if len(args) > 3:
+    targets = args[3]
 
-# this is value not case sensitive somehow
+# this value is not case sensitive somehow
 heldValues = ["Not Held", "Held"]
 rollsleft = 3
 # dice[number][held value,dice value]
@@ -34,8 +37,11 @@ history = json.loads(filedata)
 # TODO: this should be a function
 # update roll from history
 if debug:
-    print("rollsleft:" + str(rollsleft))
+    print(str(history[str(curUser)]["current"]["remainingRolls"]))
 rollsleft = history[str(curUser)]["current"]["remainingRolls"]
+
+if debug:
+    print("debug-rollsleft:" + str(rollsleft) + "\n")
 for thing in range(5):
     diceField = "dice" + str(thing + 1)
     # if dice[int(thing)][1] == 0:
@@ -62,60 +68,107 @@ def initial_roll():
     for die in range(5):
         dice[die][1] = random.randrange(1, 7)
         die += 1
-        continue
     reducerolls()
 
 
 # Game loop
 def main_loop():
+    # split args and run function on each
+    if debug:
+        print("rollsleft2: " + str(rollsleft))
+        print("roll action:" + str(action))
+        print("roll lef:" + str(rollsleft))
+        print("action:" + str(action) + "   " + (rollsleft))
+    if action == "keep" or action == "drop":
+        dicechange()
+        score_roll()
 
-    playing = True
-    while playing:
-        print("rollsleft: " + str(rollsleft))
+    elif action == "roll":
+        if debug:
+            print("rollsleft-roll: " + str(rollsleft))
         if rollsleft == 3:
             initial_roll()
         elif int(rollsleft) > 0:
-            # I think this disables interaction
             user_check_dice()
-            reroll()
-        else:
+            reducerolls()
             score_roll()
-            val = input('Play again?(y or n)\n')
-            if val == 'n' or val == 'N':
-                playing = False
-            else:
-                resetrolls()
-                resethelds()
+            print("Rolls remaining: " + str(rollsleft))
+
+    elif action == "status":
+        score_roll()
+        print("Rolls remaining: " + str(rollsleft))
+
+    else:
+        print("Invalid action specified.")
+
+    # reset if this roll was the last remaining
+    if debug:
+        print("rollsleft1: " + str(rollsleft))
+    if rollsleft == 0:
+        # score_roll()
+        resetrolls()
+        resethelds()
+        if debug:
+            print("rollsleft2: " + str(rollsleft))
+
+    writehistory()
+
+
+def dicechange():
+    if debug:
+        print("write dice change")
+        print(len(args))
+    if action == "keep" or action == 'drop':
+        if len(args) > 3:
+            holdnum = args[3].split(",")
+        for y in holdnum:
+            if debug:
+                print("holdnum:" + str(holdnum))
+                print("y: " + str(y))
+                print(diceField)
+            # index out of range
+            if int(y) < 6:
+                if dice[int(y)][0] == 0:
+                    # history[str(curUser)]["current"]["disk" + str(y) + "held"] = 0
+                    dice[int(y)][0] = 1
+                else:
+                    dice[int(y)][0] = 0
+
+
+def writehistory():
+    # not sure if this prints dice or history or bothkj
+    print("write history")
 
 
 # Let users hold dice
 def user_check_dice():
-    userdone = False
-    while not userdone:
-        for x in range(5):
-            print('Dice #' + str(x + 1) + ': ' + str(dice[x][1]) + '   ' + str(dice[x][0]))
-        val = input('Type the number of the die to hold it or type C to continue.\n')
-
-        if val == "C" or val == 'c':
-            userdone = True
-        elif val == "1" or val == "2" or val == "3" or val == "4" or val == "5":
-            if dice[int(val) - 1][0] == heldValues[1]:
-                dice[int(val) - 1][0] = heldValues[0]
-            else:
-                dice[int(val) - 1][0] = heldValues[1]
+    for x in range(5):
+        if debug:
+            print("x: " + str(x))
+        # print('Dice #' + str(x + 1) + ': ' + str(dice[x][1]) + '   ' + str(dice[x][0]))
+        reroll()
+        x += 1
 
 
 def reroll():
     for x in range(5):
         if dice[x][0] == heldValues[0]:
             dice[x][1] = random.randrange(1, 7)
-            continue
-    reducerolls()
+        if debug:
+            print("heldValues-reroll: " + str(heldValues[0]) + " " + str(dice[x][0]))
+            print("reduce")
+            print("xreroll: " + str(x))
+
+    # reducerolls()
 
 
 def reducerolls():
     global rollsleft
+    if debug:
+        print("rollsleft-reduce=" + str(rollsleft))
     rollsleft = int(rollsleft) - 1
+    if debug:
+        print("rollsleft-reduce=" + str(rollsleft))
 
 
 def resetrolls():
@@ -139,10 +192,11 @@ def score_roll():
     num6 = 0
 
     for x in range(5):
-        print('Dice #' + str(x + 1) + ': ' + str(dice[x][1]))
+        # if debug:
+        print('Dice #' + str(x + 1) + ': ' + str(dice[int(x)][1]) + "    " + str(dice[int(x)][0]))
 
     # check for yahtzee
-    if dice[0][1] == dice[1] and dice[1] == dice[2] and dice[2] == dice[3] and dice[3] == dice[4]:
+    if dice[0][1] == dice[1][1] and dice[1][1] == dice[2][1] and dice[2][1] == dice[3][1] and dice[3][1] == dice[4][1]:
         score = 50
         special = "! YAHTZEE !"
 
