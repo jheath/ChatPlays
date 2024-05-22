@@ -1,17 +1,17 @@
 {
   "curUser": {
     "current": {
-      "remainingRolls": "",
-      "dice1": "",
-      "dice2": "",
-      "dice3": "",
-      "dice4": "",
-      "dice5": "",
-      "dice1Held": "",
-      "dice2Held": "",
-      "dice3Held": "",
-      "dice4Held": "",
-      "dice5Held": ""
+      "remainingRolls": "2",
+      "dice1": "5",
+      "dice2": "2",
+      "dice3": "1",
+      "dice4": "1",
+      "dice5": "2",
+      "dice1Held": "Held",
+      "dice2Held": "Not Held",
+      "dice3Held": "Held",
+      "dice4Held": "Held",
+      "dice5Held": "Not Held"
     },
     "daily": {
       "score": "",
@@ -19,22 +19,67 @@
     },
     "top": {
       "score": "",
-      "numGames": "",
-      "": {}
+      "numGames": ""
+    }
+  },
+  "pg": {
+    "current": {
+      "remainingRolls": "2",
+      "dice1": "5",
+      "dice2": "1",
+      "dice3": "1",
+      "dice4": "6",
+      "dice5": "2",
+      "dice1Held": "Held",
+      "dice2Held": "Not Held",
+      "dice3Held": "Not Held",
+      "dice4Held": "Held",
+      "dice5Held": "Not Held"
+    },
+    "daily": {
+      "score": "12",
+      "numGames": "23"
+    },
+    "top": {
+      "score": "45",
+      "numGames": "3"
+    }
+  },
+  "erg": {
+    "current": {
+      "remainingRolls": "1",
+      "dice1": "2",
+      "dice2": "2",
+      "dice3": "1",
+      "dice4": "1",
+      "dice5": "3",
+      "dice1Held": "Held",
+      "dice2Held": "Held",
+      "dice3Held": "Held",
+      "dice4Held": "Held",
+      "dice5Held": "Not Held"
+    },
+    "daily": {
+      "score": "23",
+      "numGames": "34"
+    },
+    "top": {
+      "score": "50",
+      "numGames": "400"
     }
   },
   "top": {
     "daily": {
-      "players": "",
-      "numUsers": "",
-      "user": "",
-      "score": ""
+      "players": "23",
+      "numUsers": "2",
+      "user": "pg",
+      "score": "53"
     },
     "all": {
-      "numPlays": "",
-      "numUsers": "",
-      "user": "",
-      "score": ""
+      "numGames": "55",
+      "numUsers": "5",
+      "user": "pg",
+      "score": "12"
     }
   }
 }
