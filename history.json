@@ -1,85 +1,84 @@
 {
-  "curUser": {
+"pg": {
     "current": {
-      "remainingRolls": "2",
-      "dice1": "5",
-      "dice2": "2",
-      "dice3": "1",
-      "dice4": "1",
-      "dice5": "2",
-      "dice1Held": "Held",
-      "dice2Held": "Not Held",
-      "dice3Held": "Held",
-      "dice4Held": "Held",
-      "dice5Held": "Not Held"
+        "remainingRolls": "3",
+        "dice1": "0",
+        "dice2": "0",
+        "dice3": "0",
+        "dice4": "0",
+        "dice5": "0",
+        "dice1Held": "Not Held",
+        "dice2Held": "Not Held",
+        "dice3Held": "Not Held",
+        "dice4Held": "Not Held",
+        "dice5Held": "Not Held"
     },
     "daily": {
-      "score": "",
-      "numGames": ""
+        "score": "0",
+        "numGames": "0"
     },
     "top": {
-      "score": "",
-      "numGames": ""
+        "score": "0",
+        "numGames": "0"
     }
-  },
-  "pg": {
+},
+"dog": {
     "current": {
-      "remainingRolls": "2",
-      "dice1": "5",
-      "dice2": "1",
-      "dice3": "1",
-      "dice4": "6",
-      "dice5": "2",
-      "dice1Held": "Held",
-      "dice2Held": "Not Held",
-      "dice3Held": "Not Held",
-      "dice4Held": "Held",
-      "dice5Held": "Not Held"
+        "remainingRolls": "2",
+        "dice1": "3",
+        "dice2": "3",
+        "dice3": "6",
+        "dice4": "1",
+        "dice5": "4",
+        "dice1Held": "Held",
+        "dice2Held": "Held",
+        "dice3Held": "Not Held",
+        "dice4Held": "Not Held",
+        "dice5Held": "Not Held"
     },
     "daily": {
-      "score": "12",
-      "numGames": "23"
+        "score": "0",
+        "numGames": "0"
     },
     "top": {
-      "score": "45",
-      "numGames": "3"
+        "score": "0",
+        "numGames": "0"
     }
-  },
-  "erg": {
+    },
+"332": {
     "current": {
-      "remainingRolls": "1",
-      "dice1": "2",
-      "dice2": "2",
-      "dice3": "1",
-      "dice4": "1",
-      "dice5": "3",
-      "dice1Held": "Held",
-      "dice2Held": "Held",
-      "dice3Held": "Held",
-      "dice4Held": "Held",
-      "dice5Held": "Not Held"
+        "remainingRolls": "2",
+        "dice1": "1",
+        "dice2": "1",
+        "dice3": "2",
+        "dice4": "2",
+        "dice5": "1",
+        "dice1Held": "Held",
+        "dice2Held": "Held",
+        "dice3Held": "Held",
+        "dice4Held": "Held",
+        "dice5Held": "Held"
     },
     "daily": {
-      "score": "23",
-      "numGames": "34"
+        "score": "0",
+        "numGames": "0"
     },
     "top": {
-      "score": "50",
-      "numGames": "400"
+        "score": "0",
+        "numGames": "0"
     }
-  },
-  "top": {
+},
+"top": {
     "daily": {
-      "players": "23",
-      "numUsers": "2",
-      "user": "pg",
-      "score": "53"
+        "players": "1",
+        "numUsers": "1",
+        "user": "332",
+        "score": "0"
     },
     "all": {
-      "numGames": "55",
-      "numUsers": "5",
-      "user": "pg",
-      "score": "12"
-    }
-  }
+        "numGames": "1",
+        "numUsers": "1",
+        "user": "332",
+        "score": "0"
+    } }
 }
