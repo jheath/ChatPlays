@@ -1,0 +1,40 @@
+
+{
+"332": {
+    "current": {
+        "remainingRolls": "3",
+        "dice1": "0",
+        "dice2": "0",
+        "dice3": "0",
+        "dice4": "0",
+        "dice5": "0",
+        "dice1Held": "Not Held",
+        "dice2Held": "Not Held",
+        "dice3Held": "Not Held",
+        "dice4Held": "Not Held",
+        "dice5Held": "Not Held"
+    },
+    "daily": {
+        "score": "0",
+        "numGames": "0"
+    },
+    "top": {
+        "score": "0",
+        "numGames": "0"
+    }
+},
+"top": {
+    "daily": {
+        "players": "1",
+        "numUsers": "1",
+        "user": "332",
+        "score": "0"
+    },
+    "all": {
+        "numGames": "1",
+        "numUsers": "1",
+        "user": "332",
+        "score": "0"
+    }
+}
+}
