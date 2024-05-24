@@ -284,7 +284,6 @@ def writehistory():
     if debug:
         print("write history")
 
-    # TODO: check if curUser already exists in history
     for thing in history.keys():
         if curUser == thing:
             # history has curUser already
