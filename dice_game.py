@@ -3,7 +3,7 @@ import random
 import os.path
 import json
 
-debug = False
+debug = True
 # TODO: variable names are inconsistent, needs cleanup
 # define input arguments
 args = sys.argv
@@ -113,7 +113,9 @@ def open_history():
         file.close()
         if debug:
             print("backed up "+historyFile)
+            print("############################")
 
+        # TODO: should be a function
         # TODO: delete from json
         userExists = False
         for key in history.keys():
@@ -266,50 +268,19 @@ def main_loop():
 
 
 def writehistory():
-    # not sure if this prints dice or history or both
+    # TODO: update history[] from dice[]
     # this should just be adding/updating a key in a dict
     # but cant remember how this works anymore
+    # probably a simple fix
 
-    # dice[] has all updated status for only this user
-    # filedata has the data from the file
-    # history has filedata in json?
-
-    global dice
-    global curUser
-    global history
-    global filedata
     global historyFile
     global historyEntry
 
     if debug:
-        print("write history")
-
-    for thing in history.keys():
-        if curUser == thing:
-            # history has curUser already
-            if debug:
-                print("")
-                print("curUser found:" + str(key))
-    # TODO: update history[] from dice[]
-
-    if debug:
-        print("")
         print("historyFile:" + historyFile)
-        print("history:" + str(history))
-        print("curUser:" + curUser)
-        print("curUser data:" + filedata)
-
-    historyEntry = "{\"" + str(curUser) + "\": {" + template + str(filedata)
-    # historyEntry = "{\"" + str(curUser) + "\": {" + template + str(filedata)
-
-    if debug:
-        print("")
-        print("historyFile:" + historyFile)
-        print("history:" + str(history))
-        print("curUser:" + curUser)
-        print("curUser data:" + filedata)
-
-    exit()
+        print("=======")
+        print("historyEntry:\n"+historyEntry)
+        print("=======")
 
     # write new history file
     file = open(historyFile, "w")
@@ -348,37 +319,6 @@ def dicechange():
                     print("hold: " + str(dice[int(y)][0]))
                     print("value: " + str(dice[int(y)][1]))
                     print("dice all2: " + str(dice))
-
-
-def writehistory():
-    # not sure if this prints dice or history or both
-    # this should just be adding/updating a key in a dict
-    # but cant remember how this works anymore
-    if debug:
-        print("write history")
-
-    global filedata
-    global dice
-    global historyEntry
-
-    # TODO: not updating existing records
-    # cannot get the json object to update correctly
-    historyEntry = "{\"" + str(curUser) + "\": {" + template + str(filedata)
-    # historyEntry = "{\"" + str(curUser) + "\": {" + template + str(filedata)
-
-    if debug:
-        print("")
-        print("historyFile:"+historyFile)
-        print("history:"+str(history))
-        print("filedata:"+filedata)
-        print("curUsername:"+curUser)
-
-        # TODO: dicefield does not exist, what am i looking for
-        # print("dicefield:"+[str(diceField)])
-        # diceValue = history[str(curUser)]["current"][str(diceField)]
-
-        # print("diceval:"+curUser+" "+diceValue)
-        # print("curUser:"+historyEntry["curUser"])
 
 
 # Let users hold dice
