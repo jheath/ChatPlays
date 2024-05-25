@@ -272,7 +272,7 @@ def writehistory():
         #update history with dice
 
         dicefield = "dice"+str(x)
-        diceheld = dicefield + "held"
+        diceheld = dicefield + "Held"
         if debug:
             print(str(x)+":"+str(dice[x][1]))
 
