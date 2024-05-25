@@ -3,7 +3,7 @@ import random
 import os.path
 import json
 
-debug = True
+debug = False
 # TODO: variable names are inconsistent, needs cleanup
 # define input arguments
 args = sys.argv
@@ -36,7 +36,7 @@ template = """
         "score": "0",
         "numGames": "0"
     }
-},"""
+}"""
 
 # blank entry for top scores
 # write this first to finish file without ','
@@ -57,8 +57,8 @@ top_record = """\n"top": {
 }
 }"""
 
-if debug:
-    print("")
+#if debug:
+    # print("")
     # print("top:\n"+top_record)
 
 heldValues = ["Not Held", "Held"]
@@ -66,6 +66,7 @@ rollsleft = 4
 historyFile = "history.json"
 bakFile = historyFile + ".bak"
 
+# brand new history file
 historyEntry="\n" + "{\n\"" + str(curUser) + "\": {" + template + top_record
 if debug:
     print("")
@@ -73,7 +74,7 @@ if debug:
 
 # TODO: double check this
 # create empty history record in json format
-history=json.loads(historyEntry)
+# history=json.loads(historyEntry)
 
 dice = [[heldValues[0], 0],
         [heldValues[0], 0],
@@ -86,93 +87,97 @@ dice = [[heldValues[0], 0],
 def open_history():
     # existing file data
     global filedata
+    global history
     global historyEntry
-    historyFile = "history.json"
-
+    global rollsleft
     if debug:
-        print("running open_history")
+        print("start open_history")
+    historyFile = "history.json"
+    template = """
+        "current": {
+            "remainingRolls": "3",
+            "dice1": "0",
+            "dice2": "0",
+            "dice3": "0",
+            "dice4": "0",
+            "dice5": "0",
+            "dice1Held": "Not Held",
+            "dice2Held": "Not Held",
+            "dice3Held": "Not Held",
+            "dice4Held": "Not Held",
+            "dice5Held": "Not Held"
+        },
+        "daily": {
+            "score": "0",
+            "numGames": "0"
+        },
+        "top": {
+            "score": "0",
+            "numGames": "0"
+        }
+    }"""
 
     # only run history pull if this file exists
     if os.path.isfile(historyFile):
-        # we know there is a history file, so a backup history file should also exist
         # Open history file
         if debug:
             print("historyFile: " + historyFile)
             print("-historyFile exists")
+
         file = open(historyFile, "r")
         filedata = file.read()
         file.close()
         history = json.loads(filedata)
+
         if debug:
             print("filedata: " + str(filedata))
             print("-history:" + str(history))
 
-        # create backup file from history file
-        file = open(bakFile, "w")
-        file.write(str(historyEntry))
-        file.close()
-        if debug:
-            print("backed up "+historyFile)
-            print("############################")
-
         # TODO: should be a function
-        # TODO: delete from json
+        # check_for_user()
+        # see if curUser is in history
         userExists = False
         for key in history.keys():
             if debug:
                 print("history key:" + str(key))
                 print("user:"+curUser)
             if key == curUser:
-                userExists = True
                 if debug:
                     print("found "+key+":"+curUser)
-                    print("deleted historyFile[curuser]")
+                userExists = True
+                break
 
-        if debug:
-            print("finished key loop")
-            print("")
-            print("----++++-historyJson: "+str(history))
-            # print("----++++-historyJson: "+str(history[curUser]))
-
-        # merge the history & current roll
         if userExists == False:
-            # This is a hack
+            # TODO: should be a function
+            # new_user()
+            # user not found,add new key to history
+            if debug:
+                print("user not found in history - "+curUser)
+
+            userTemplate  = "{ " + curUser + ": { "+ template + " }"
+            history.update(userTemplate)
+            # This creates a new key with the default fields
+
+            history[curUser] = template
+
             # historyEntry = "\n{\n\"" + str(curUser) + "\": {" + template + "\n"+ str(filedata[2:])
-            historyEntry = "\n{\n\"" + str(curUser) + "\": {" + template + "\n"+ str(filedata[2:])
         else:
-            del history[curUser]
-            historyEntry = str(filedata)
-            # historyEntry is the object to update
-        if debug:
-            print("userExists: "+str(userExists))
-            print("historyEntry-history:"+ historyEntry)
-            print("############################")
-            print("")
+            # TODO: this should be a function
+            # found_user()
+            # user does exist, update history dict values
 
-    else:
-        # we don't see a history file, so the new user template should be used
-        historyEntry = template
-        #historyEntry = "{\n\"" + str(curUser) + "\": {" + template + top_record
-        #historyEntry = "\n{\"" + str(curUser) + "\": {" + template + str(filedata[2:])
-        if debug:
-            print("historyEntry no match")
-            print("historyEntry set:" + historyEntry)
+            for x in range(5):
+                diceNum = "dice"+str(x+1)
+                diceHold = "dice"+str(x+1)+"Held"
+                # find dice value
+                dice[x][1] = history[curUser]["current"][diceNum]
+                dice[x][0] = history[curUser]["current"][diceHold]
+                if debug:
+                    print(diceNum + ":" + dice[x][1])
+                    print(diceHold + ":" + dice[x][0])
+                # die += 1
 
-        history = json.loads(historyEntry)
-        if debug:
-            print("historyEntry match")
-
-        if debug:
-            print("")
-            print("history end")
-            # print("historyEntry:"+str(historyEntry))
-            print("historyEntry end")
-            # print(str(filedata[:-1]) + "\n\"" + str(curUser) + "\": {" + template + "}")
-
-        print("str history:"+str(history))
-        history = json.loads(historyEntry)
-        print("jsonhistory:"+str(history))
-        print("history end:")
+            rollsleft = history[curUser]["current"]["remainingRolls"]
 
 
 def initial_roll():
@@ -185,12 +190,6 @@ def initial_roll():
         die += 1
 
     reducerolls()
-
-
-def create_history_record():
-    if debug:
-        print("")
-        print("we're adding a user")
 
 
 # Game loop
@@ -208,38 +207,35 @@ def main_loop():
         print("rolls remaining:" + str(rollsleft))
         print("action:" + str(action) + "   " + str(rollsleft))
 
-    if action == "keep" or action == "drop":
+    if action.lower() == "keep" or action == "drop":
         dicechange()
         score_roll()
 
-    elif action == "roll":
+    elif action.lower() == "roll":
         if debug:
-            print("")
-            print("rollsleft-roll: " + str(rollsleft))
+            print("roll sub")
 
-        if rollsleft == 4:
+        if int(rollsleft) == 4:
             initial_roll()
             reducerolls()
             score_roll()
-        elif rollsleft in [1, 2, 3]:
+        elif int(rollsleft) in [1, 2, 3]:
             user_check_dice()
             reducerolls()
             score_roll()
-            print("")
             print("Rolls remaining: " + str(rollsleft))
 
-    elif action == "status":
+    elif action.lower() == "status":
         if debug:
+            # the history data isn't read yet
             print("rollsleft:" + str(rollsleft))
 
-        if rollsleft in [1, 2, 3]:
+        if int(rollsleft) in [1, 2, 3]:
             score_roll()
-            remaining = rollsleft
         elif rollsleft == 4:
             print("You haven't rolled yet.\n")
-            remaining = rollsleft - 1
 
-        print("Rolls remaining: " + str(remaining))
+        print("Rolls remaining: " + str(rollsleft))
 
     else:
         print("")
@@ -257,68 +253,85 @@ def main_loop():
             print("")
             print("rolls and helds reset: " + str(rollsleft))
 
-    # write current history
-    if debug:
-        print("write call")
-
-    writehistory()
-
-    if debug:
-        print("write done")
+    if action != "status":
+        writehistory()
 
 
 def writehistory():
-    # TODO: update history[] from dice[]
     # this should just be adding/updating a key in a dict
     # but cant remember how this works anymore
     # probably a simple fix
 
+    global history
     global historyFile
     global historyEntry
 
-    if debug:
-        print("historyFile:" + historyFile)
-        print("=======")
-        print("historyEntry:\n"+historyEntry)
-        print("=======")
+    # TODO: update history with new dice values
+    x = 1
+    while x != 6:
+        #update history with dice
+
+        dicefield = "dice"+str(x)
+        diceheld = dicefield + "held"
+        if debug:
+            print(str(x)+":"+str(dice[x][1]))
+
+        heldstr = str(dice[x][0])
+
+        if heldstr == "Held":
+            history[curUser]["current"][dicefield] = str(dice[x][1])
+            history[curUser]["current"][diceheld] = str(dice[x][0])
+
+        x += 1
+        # print("")
+
+    # Convert python to json
+    historyJson = json.dumps(history, indent = 4)
 
     # write new history file
     file = open(historyFile, "w")
-    file.write(str(historyEntry))
+    file.write(str(historyJson))
     file.close()
 
 
 def dicechange():
     if debug:
+        print("--dicechange--")
         print("")
         print("argument count:" + str(len(args)))
     if action == "keep" or action == 'drop':
+        # seems like a dupe
         if len(args) > 3:
             holdnum = args[3].split(",")
+
         for y in holdnum:
             if debug:
                 print("")
                 print("holdnum:" + str(holdnum))
                 print("y: " + str(y))
                 # print("dice field: " + str(diceField))
+
             if int(y) < 6:
                 if debug:
                     print("")
                     print("dice #1: " + str(y))
                     print("dice all1: " + str(dice))
                     print("hold value1: " + str(dice[int(y) - 1]))
-                if action == "keep":
+
+                if action.lower() == "keep":
                     dice[(int(y) - 1)][0] = heldValues[1]
-                elif action == "drop":
+                elif action.lower() == "drop":
                     dice[(int(y) - 1)][0] = heldValues[0]
                 else:
                     print("didn't match keep/drop")
+
                 if debug:
                     print("")
                     print("hold value2: " + str(dice[int(y) - 1]))
                     print("hold: " + str(dice[int(y)][0]))
                     print("value: " + str(dice[int(y)][1]))
                     print("dice all2: " + str(dice))
+                    print("--dicechange--")
 
 
 # Let users hold dice
@@ -337,17 +350,11 @@ def reroll():
             dice[x][1] = random.randrange(1, 7)
         if debug:
             print("heldValues-reroll: " + str(heldValues[0]) + " " + str(dice[x][0]))
-            print("reduce")
             print("xreroll: " + str(x))
-
-    # reducerolls()
 
 
 def reducerolls():
     global rollsleft
-    if debug:
-        print("running reducerolls")
-        print("rollsleft-reduce=" + str(rollsleft))
 
     rollsleft = int(rollsleft) - 1
     if debug:
@@ -365,7 +372,7 @@ def resethelds():
 
 
 def score_roll():
-    # only run this when rollsLeft == 0
+    # only run this when rollsLeft == 0?
     score = 0
     special = ""
     num1 = 0
