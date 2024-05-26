@@ -16,6 +16,7 @@ class History:
     - save_file(): Saves data to the JSON file.
     - does_username_exist(key): Checks if a username exists in the data.
     - create_username(username): Creates a new username entry in the data and initializes it with default values.
+    - get_top(): Returns data for the leaderboard.
 
     Example usage:
     history = History()
