@@ -1,9 +1,9 @@
 import random
 from history import History
 
-#True - if pear exists
 history = History()
-print(history.does_username_exist('pear'))
+if history.does_username_exist('pear') == False:
+    history.create_username('pear')
 
 #True - creates a new username
 history = History()
@@ -12,11 +12,11 @@ history.create_username(username)
 history.save_file()
 print(history.does_username_exist(username))
 
-#True - creates a new username
+#[1,2,3,4,5] - sets dice to [1,2,3,4,5] and writes to file
 history = History()
-history.data["pear"]["current"]["dice"] = [1,2,3,4,5]
+history.data['pear']['current']['dice'] = [1,2,3,4,5]
 history.save_file()
-print(history.data["pear"])
+print(history.data['pear']['current']['dice'])
 
 #Get top values
 history = History()
