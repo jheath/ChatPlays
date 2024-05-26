@@ -46,3 +46,6 @@ class History:
         user_template = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.', 'user_template.json')
         self.data[username] = self.load_file(user_template)
         self.save_file()
+
+    def get_top(self):
+       return self.data['top']
