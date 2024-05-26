@@ -4,6 +4,14 @@ import os.path
 import json
 
 debug = False
+
+allowed_actions = ["keep", "drop", "roll", "status"]
+
+# Check if the required arguments are provided
+if len(sys.argv) < 3:
+    print("Usage: python dice_game.py <curUser> <action> [targets]")
+    sys.exit(1)
+
 # TODO: variable names are inconsistent, needs cleanup
 # define input arguments
 args = sys.argv
@@ -11,6 +19,11 @@ curUser = args[1]
 action = args[2]
 if len(args) > 3:
     targets = args[3]
+
+# Check if the action is valid
+if action not in allowed_actions:
+    print(f"Invalid action. Allowed actions are: {', '.join(allowed_actions)}")
+    sys.exit(1)
 
 # var inits
 # This template is used to add new users to the history file
