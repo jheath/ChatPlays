@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import date
 from history.history import History
+from history.history_highscore import HistoryHighscore
 from dice.dice import Dice
 
 class YahtSea:
@@ -42,6 +43,7 @@ class YahtSea:
     def __init__(self, username):
         self.username = username
         self.history = History()
+        self.history_highscore = HistoryHighscore(self.history)
         self.dice = Dice()
 
         # Creates a new username in the history file if it does not exist
@@ -103,10 +105,7 @@ class YahtSea:
             if len(self._get_round_scores()) == 3:
                 # Sum the round scores to get the total score
                 total_score = sum(self.history.data[self.username]['current']['roundScores'])
-                self._log_game_score(total_score)
-
-                # Log games played for daily and all time
-                self._increment_number_games_played()
+                self.history_highscore.submit_score(self.username, total_score)
 
         self._save_state()
 
@@ -173,35 +172,3 @@ class YahtSea:
 
     def _set_dice_held(self, dice_held):
         self.history.data[self.username]['current']['diceHeld'] = dice_held
-
-    def _log_game_score(self, score):
-        current_date = date.today().strftime("%Y-%m-%d")
-
-        if current_date not in self.history.data[self.username]['daily']:
-            self.history.data[self.username]['daily'][current_date] = {'score': 0, 'numGames': 0}
-
-        # todo This needs some sort of clean up for old daily records
-
-        current_daily_score = self.history.data[self.username]['daily'][current_date]['score']
-
-        # Only update score if it is higher than the current daily score
-        if score > current_daily_score:
-            self.history.data[self.username]['daily'][current_date]['score'] = score
-
-        current_all_time_score = self.history.data[self.username]['top']['score']
-
-        # Only update score if it is higher than the current all time score
-        if score > current_all_time_score:
-            self.history.data[self.username]['top']['score'] = score
-
-    def _increment_number_games_played(self):
-        current_date = date.today().strftime("%Y-%m-%d")
-
-        if current_date not in self.history.data[self.username]['daily']:
-            self.history.data[self.username]['daily'][current_date] = {'score': 0, 'numGames': 0}
-
-        daily_games_played = self.history.data[self.username]['daily'][current_date]['numGames']
-        self.history.data[self.username]['daily'][current_date]['numGames'] = daily_games_played + 1
-
-        all_games_played = self.history.data[self.username]['top']['numGames']
-        self.history.data[self.username]['top']['numGames'] = all_games_played + 1
