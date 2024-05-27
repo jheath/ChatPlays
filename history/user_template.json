@@ -1,0 +1,13 @@
+{
+	"current": {
+		"roundScores": [],
+		"remainingRolls": 0,
+		"dice": [0,0,0,0,0],
+		"diceHeld": []
+	},
+	"daily": {},
+	"top": {
+		"score": 0,
+		"numGames": 0
+	}
+}
