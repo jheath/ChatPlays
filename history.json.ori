@@ -3,7 +3,7 @@
 		"daily": {},
 		"all": {
 			"numGames": 0,
-			"users": []
+			"users": {}
 		}
 	}
 }
