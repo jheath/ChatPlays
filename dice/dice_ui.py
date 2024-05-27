@@ -47,11 +47,4 @@ class DiceUI:
             pygame.draw.circle(self.screen, (0, 0, 0), (self.x_pos + 20, self.y_pos + 80), 10)
             pygame.draw.circle(self.screen, (0, 0, 0), (self.x_pos + 80, self.y_pos + 20), 10)
         if self.active:
-            pygame.draw.rect(self.screen, (255, 0, 0), [self.x_pos, self.y_pos, 100, 100], 4, 5)
-
-    def check_click(self, coordinates):
-        if self.die.collidepoint(coordinates):
-            if selected[self.key]:
-                selected[self.key] = False
-            elif not selected[self.key]:
-                selected[self.key] = True
+            pygame.draw.rect(self.screen, (20, 20, 20), [self.x_pos, self.y_pos, 100, 100], 5, 5)
