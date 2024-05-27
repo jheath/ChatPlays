@@ -60,7 +60,7 @@ class History:
         self.data[username] = self.load_file(user_template)
         self.save_file()
 
-	def get_active_game_username(self):
+    def get_active_game_username(self):
         date_time = datetime.now()
 
         oldest_date = None
