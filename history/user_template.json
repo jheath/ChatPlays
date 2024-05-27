@@ -3,7 +3,9 @@
 		"roundScores": [],
 		"remainingRolls": 0,
 		"dice": [0,0,0,0,0],
-		"diceHeld": []
+		"diceHeld": [],
+		"started": "",
+		"updated": ""
 	},
 	"daily": {},
 	"top": {
