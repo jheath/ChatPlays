@@ -1,6 +1,6 @@
 import os
 import sys
-from datetime import date
+from datetime import datetime
 from history.history import History
 from history.history_highscore import HistoryHighscore
 from dice.dice import Dice
@@ -55,6 +55,11 @@ class YahtSea:
             print("Game still in progress.")
             sys.exit(1)
 
+        # Set the game as started
+        date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self._set_started(date_time)
+        self._set_updated(date_time)
+
         # Reset the round scores each rounds score will be appended here
         self._set_round_scores([])
 
@@ -73,6 +78,12 @@ class YahtSea:
         if self._get_remaining_rolls() == 0:
             print("No rolls remaining.")
             sys.exit(1)
+
+        # Updated the game as being played
+        date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self._set_updated(date_time)
+
+        self.history.get_active_game_username()
 
         # Any dice not held wwill have it's value set to 0 for the roll
         newDice = [value if index + 1 in self._get_dice_held() else 0 for index, value in enumerate(self._get_dice())]
@@ -103,6 +114,9 @@ class YahtSea:
 
             # End of game
             if len(self._get_round_scores()) == 3:
+                self._set_started("")
+                self._set_updated("")
+
                 # Sum the round scores to get the total score
                 total_score = sum(self.history.data[self.username]['current']['roundScores'])
                 self.history_highscore.submit_score(self.username, total_score)
@@ -116,6 +130,10 @@ class YahtSea:
             print("No rolls remaining.")
             sys.exit(1)
 
+        # Updated the game as being played
+        date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self._set_updated(date_time)
+
         # Set the dice to hold
         self._set_dice_held(dice_to_hold)
 
@@ -124,6 +142,13 @@ class YahtSea:
         return self.history.data[self.username]
 
     def status(self):
+        # TODO this is probibly problematic
+        # Set the game as started
+        date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self._set_started(date_time)
+
+        self._save_state()
+
         return self.history.data[self.username]
 
     def end_round(self):
@@ -145,6 +170,12 @@ class YahtSea:
 
     def get_score(self):
         return self.dice.get_score()
+
+    def _set_started(self, date_time):
+        self.history.data[self.username]['current']['started'] = date_time
+
+    def _set_updated(self, date_time):
+        self.history.data[self.username]['current']['updated'] = date_time
 
     def _save_state(self):
         self.history.save_file()
