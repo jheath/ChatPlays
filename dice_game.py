@@ -2,10 +2,11 @@ import sys
 import random
 import os.path
 import json
+from yahtsea import YahtSea
 
 debug = False
 
-allowed_actions = ["keep", "drop", "roll", "status"]
+allowed_actions = ["play", "hold", "roll", "end_round", "status", "get_active_game_username"]
 
 # Check if the required arguments are provided
 if len(sys.argv) < 3:
@@ -17,6 +18,7 @@ if len(sys.argv) < 3:
 args = sys.argv
 curUser = args[1]
 action = args[2]
+targets = ''
 if len(args) > 3:
     targets = args[3]
 
@@ -24,6 +26,8 @@ if len(args) > 3:
 if action not in allowed_actions:
     print(f"Invalid action. Allowed actions are: {', '.join(allowed_actions)}")
     sys.exit(1)
+
+yahtsea = YahtSea(curUser)
 
 # var inits
 # This template is used to add new users to the history file
@@ -207,67 +211,20 @@ def initial_roll():
 
 # Game loop
 def main_loop():
-    # split args and run function on each
-
-    # checking for history file
-    # reading history file, creating copy
-    # building new player records
-    open_history()
-
-    if debug:
-        print("")
-        print("roll action:" + str(action))
-        print("rolls remaining:" + str(rollsleft))
-        print("action:" + str(action) + "   " + str(rollsleft))
-
-    if action.lower() == "keep" or action == "drop":
-        dicechange()
-        score_roll()
-
-    elif action.lower() == "roll":
-        if debug:
-            print("roll sub")
-
-        if int(rollsleft) == 4:
-            initial_roll()
-            reducerolls()
-            score_roll()
-        elif int(rollsleft) in [1, 2, 3]:
-            user_check_dice()
-            reducerolls()
-            score_roll()
-            print("Rolls remaining: " + str(rollsleft))
-
-    elif action.lower() == "status":
-        if debug:
-            # the history data isn't read yet
-            print("rollsleft:" + str(rollsleft))
-
-        if int(rollsleft) in [1, 2, 3]:
-            score_roll()
-        elif rollsleft == 4:
-            print("You haven't rolled yet.\n")
-
-        print("Rolls remaining: " + str(rollsleft))
-
-    else:
-        print("")
-        print("Invalid action specified.")
-
-    # reset if this roll was the last remaining
-    if debug:
-        print("")
-        print("rollsleft1: " + str(rollsleft))
-    if rollsleft == 0:
-        # score_roll()
-        resetrolls()
-        resethelds()
-        if debug:
-            print("")
-            print("rolls and helds reset: " + str(rollsleft))
-
-    if action != "status":
-        writehistory()
+    if action.lower() == 'play':
+        print(yahtsea.play())
+    elif action.lower() == 'roll':
+        print(yahtsea.roll())
+    elif action.lower() == 'hold':
+        target_pieces = targets.split(',')
+        target_pieces_as_int = [int(target.strip()) for target in target_pieces]
+        print(yahtsea.hold(target_pieces_as_int))
+    elif action.lower() == 'end_round':
+        print(yahtsea.end_round())
+    elif action.lower() == 'status':
+        print(yahtsea.status())
+    elif action.lower() == 'get_active_game_username':
+        print(yahtsea.get_active_game_username())
 
 
 def writehistory():

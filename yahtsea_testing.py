@@ -12,6 +12,9 @@ if len(args) > 3:
 
 yahtsea = YahtSea(username)
 
+if action == 'get_active_game_username':
+	print(yahtsea.get_active_game_username())
+
 if action == 'play':
     print(yahtsea.play())
 
