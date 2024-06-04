@@ -60,7 +60,7 @@ function onBitsRedemption(data) {
 ////
 function onChannelPointsRedeption(data) {
     //YahtSea reward ID
-    if (data.payload.event.reward?.id === '513b3dfb-c1a5-4a0f-81dc-676239a1182e') {
+    if (data.payload.event.reward?.id === CONFIG.yahtseaRewardId) {
         if (data.payload.event['user_login']) {
             yahtSeaChat.processChat('play', data.payload.event['user_login']);
         }
