@@ -9,7 +9,7 @@ const { execFile } = require("child_process");
 
 const app = express();
 
-//// Set up the Twitch Chat Connection
+//// Set up the Twitch Chat Connect
 function chatConnect() {
     const client = new tmi.Client({
         channels: [ CONFIG.channel_name ]
@@ -59,24 +59,17 @@ function onBitsRedemption(data) {
 
 ////
 function onChannelPointsRedeption(data) {
-    console.log(`Simulating Twitch Chat...`);
-    console.log(`Use the following commands:`);
-    console.log(`- play`);
-    console.log(`- roll`);
-    console.log(`- hold 1,2,4...`);
-    console.log(`- end_round`);
-    console.log(`- status`);
-    console.log(``);
-
-    execFile('python', ['yahtsea_pygame.py'], (error, stdout, stderr) => {});
-
-    yahtSeaChat.processChat('play', tags['username']);
+    //YahtSea reward ID
+    if (data.payload.event.reward?.id === '513b3dfb-c1a5-4a0f-81dc-676239a1182e') {
+        if (data.payload.event['user_login']) {
+            yahtSeaChat.processChat('play', data.payload.event['user_login']);
+        }
+    }
 }
 
 function onChatMessage(message, tags) {
-    console.log(tags['display-name']); //Display Name
-    console.log(tags['username']); //username
-    console.log(message); //message
+    //tags['display-name'] //Display Name
+    //tags['username'] //username
 
     yahtSeaChat.processChat(message, tags['username']);
 }
