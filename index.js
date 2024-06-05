@@ -4,7 +4,10 @@ const tmi = require('tmi.js');
 const _ = require('lodash');
 const CONFIG = require('./config.json');
 
+const twitchapi = require('./twitchapi.js');
+const eventSocket = require('./eventSocket.js');
 const yahtSeaChat = require('./src/yahtSeaChat.js');
+
 const { execFile } = require("child_process");
 
 const app = express();
@@ -24,7 +27,6 @@ function chatConnect() {
 //// 
 function main(token) {
     //// Set up the Twitch API
-    const twitchapi = require('./twitchapi.js');
     twitchapi.init(
         {
             CONFIG,
@@ -33,7 +35,6 @@ function main(token) {
     );
 
     //// Set up the Twitch Event Web Socket
-    const eventSocket = require('./eventSocket.js');
     eventSocket.init(
         {
             CONFIG,
@@ -43,9 +44,18 @@ function main(token) {
         }
     );
 
+    //// Set up the YahtSea Chat
+    yahtSeaChat.init(
+        {
+            twitchapi
+        }
+    );
+
     execFile('python', ['yahtsea_pygame.py'], (error, stdout, stderr) => {
         //nothing to do here
     });
+
+    yahtSeaChat.processCommand();
 
     eventSocket.connect();
     chatConnect();
@@ -76,7 +86,7 @@ function onChatMessage(message, tags) {
 
 // Redirect the user to Twitch for authentication
 app.get('/', (req, res) => {
-    const twitchAuthUrl = `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${CONFIG.client_id}&redirect_uri=http://localhost:3000/auth/twitch/callback&scope=channel:read:redemptions+bits:read+openid+user:read:email&claims={"id_token":{"email":null,"email_verified":null}}`;
+    const twitchAuthUrl = `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${CONFIG.client_id}&redirect_uri=http://localhost:3000/auth/twitch/callback&scope=channel:read:redemptions+bits:read+openid+user:read:email+user:write:chat&claims={"id_token":{"email":null,"email_verified":null}}`;
     res.redirect(twitchAuthUrl);
 });
 
