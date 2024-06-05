@@ -26,8 +26,11 @@ if action == 'hold':
 if action == 'roll':
     print(yahtsea.roll())
 
-if action == 'status':
-    print(yahtsea.status())
+if action == 'leaderboard':
+    print(yahtsea.leaderboard())
 
 if action == 'end_round':
     print(yahtsea.end_round())
+
+if action == 'resume':
+    print(yahtsea.resume())
