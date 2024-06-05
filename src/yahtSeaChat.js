@@ -2,12 +2,17 @@ const { execFile } = require('child_process');
 
 function processChat(message, username) {
 	const [action, target] = message.trim().toLowerCase().split(' ', 2);
+
+	//disable this to test, by providing the term "play" in chat.
+	if (action === 'play') {
+		return;
+	}
+
 	executeCall(username, action, target, (error, result) => {
 		process.stdout.write(`${result.message}\n`);
 	});
 }
 
-//TODO - This function is incomplete and needs to be implemented
 function processCommand(m) {
 	const readline = require('readline');
 
@@ -17,20 +22,72 @@ function processCommand(m) {
 	});
 
 	rl.on('line', (input) => {
-		const [action, target] = input.trim().toLowerCase().split(' ', 2);
-		executeCall(username, action, target, (error, result) => {
-			process.stdout.write(`${result.message}\n`);
-		});
+		const message = input.trim().toLowerCase();
+		if (message === 'launch') {
+			launchPyGame();
+		}
+
+		if (message === 'help') {
+			help();
+		}
 	});
 }
 
 function executeCall(username, action, target, callback) {
-	execFile('python', ['dice_game.py', username, action, target], (error, stdout, stderr) => {
-		const jsonStr = stdout.replace(/'/g, '"');
-		callback(null, JSON.parse(jsonStr));
+	if (action === 'hold') {
+		target = target.replace(/,| /g, '');
+		if (/^\d+$/.test(target) === false) {
+			return;
+		}
+
+		const uniqueNumbers = Array.from(new Set(target));
+		target = uniqueNumbers.join(',');
+	}
+
+	if (
+		(action === 'play' && target === undefined) ||
+		(action === 'hold') ||
+		(action === 'roll' && target === undefined) ||
+		(action === 'end_round' && target === undefined) ||
+		(action === 'leaderboard' && target === undefined) ||
+		(action === 'resume' && target === undefined)
+	) {
+		execFile('python', ['dice_game.py', username, action, target], (error, stdout, stderr) => {
+			const jsonStr = stdout.replace(/'/g, '"');
+			const response = JSON.parse(jsonStr);
+			callback(null, response);
+
+			if (response.message !== '') {
+				settings.twitchapi.postMessage(`${response.message}\n`);
+			}
+
+			if (action === 'play' && response.data.remainingRolls === 0) {
+				settings.twitchapi.postMessage(`A game of YahtSea was redeemed by ${username}!`);
+			}
+		});
+	}
+}
+
+function launchPyGame() {
+	execFile('python', ['yahtsea_pygame.py'], (error, stdout, stderr) => {
+		//nothing to do here
 	});
 }
 
+function help() {
+	process.stdout.write(
+	`launch - Launches YahtSeaPyGame application.
+	reset [username] - Resets the game for the specified user.\n`
+	);
+}
+
+var settings;
+function init(s) {
+	settings = s;
+}
+
 module.exports = {
-	processChat
+	init,
+	processChat,
+	processCommand
 };
