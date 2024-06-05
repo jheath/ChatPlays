@@ -43,6 +43,29 @@ function getToken() {
     });
 }
 
+function postMessage(message) {
+    const payload = {
+        "broadcaster_id": CONFIG.broadcaster_user_id,
+        "sender_id": CONFIG.broadcaster_user_id,
+        "message": message
+    }
+
+    axios.post('https://api.twitch.tv/helix/chat/messages', payload,
+    {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+            'Client-Id': CONFIG.client_id
+        }
+    })
+    .then(function (response) {
+        console.log('%j',response.data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+}
+
 var settings;
 var CONFIG;
 function init(s) {
@@ -53,5 +76,6 @@ function init(s) {
 
 module.exports = {
     init,
-    subscribe
+    subscribe,
+    postMessage
 };
