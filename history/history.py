@@ -66,6 +66,10 @@ class History:
         oldest_date = None
         oldest_key = None
 
+        # TODO - this is an annoying hack to get around the fact that the data is not always a dictionary
+        if not hasattr(self, 'data') or not isinstance(self.data, dict):
+            return None
+
         for key, value in self.data.items():
             if "current" in value and "started" in value["current"] and value["current"]["started"] != "":
                 game_started_date = value["current"]["started"]
