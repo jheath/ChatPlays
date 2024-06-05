@@ -71,9 +71,13 @@ class YahtSea:
 
         self._save_state()
 
-        return self._get_response("play", "YahtSea game started.", self.history.data[self.username])
+        return self._get_response("play", f"YahtSea game started. Dice values {self.history.data[self.username]['current']['dice']}", self.history.data[self.username])
 
     def roll(self):
+        username = self.history.get_active_game_username()
+        if username != self.username:
+            return self._get_response("roll", "", self.history.data[self.username])
+
         if self._get_remaining_rolls() == 0:
             return self._get_response("roll", "No remaining rolls.", self.history.data[self.username])
 
@@ -129,17 +133,24 @@ class YahtSea:
         data = self.history.data[self.username]
 
         if roll_status == 1:
-            additionalInformation = f"Please hold any die you wish to keep, then roll the dice. Rolls remaining: {data['current']['remainingRolls']}"
+            additionalInformation = f"Please hold any die you wish to keep, then roll the remaining. Rolls remaining: {data['current']['remainingRolls']}"
         elif roll_status == 0:
-            additionalInformation = f"Round over! Roll dice again to start the next round. Score: {data['current']['roundScores'][-1]}"
+            additionalInformation = f"Round {len(data['current']['roundScores'])} of 3 ended. Round score: {data['current']['roundScores'][-1]}. Roll dice again to start the next round."
         else:
-            additionalInformation = f"Game over - ending score: {sum(data['current']['roundScores'])}"
+            additionalInformation = f"Game over! Ending score for {self.username} is {sum(data['current']['roundScores'])} points."
 
-        return self._get_response("roll", f"Dice have been rolled. Dice values {self.history.data[self.username]['current']['dice']}\n{additionalInformation}", self.history.data[self.username])
+        return self._get_response("roll", f"Dice rolled! Dice values {self.history.data[self.username]['current']['dice']}\n{additionalInformation}", self.history.data[self.username])
 
     def hold(self, dice_to_hold):
+        username = self.history.get_active_game_username()
+        if username != self.username:
+            return self._get_response("roll", "", self.history.data[self.username])
+
         if self._get_remaining_rolls() == 0:
             return self._get_response("hold", "No remaining rolls.", self.history.data[self.username])
+
+        if self._get_remaining_rolls() == 3:
+            return self._get_response("hold", "Roll is required to start the next round.", self.history.data[self.username])
 
         # Updated the game as being played
         date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -152,9 +163,21 @@ class YahtSea:
 
         return self._get_response("hold", f"YahtSea dice {dice_to_hold} have been held.", self.history.data[self.username])
 
-    def status(self):
-        # TODO this is probably problematic
-        # Set the game as started
+    def leaderboard(self):
+        date_time = datetime.now().strftime("%Y-%m-%d")
+
+        all_users_list = [f"{user} ({score})" for user, score in self.history.data["top"]["all"]["users"].items()]
+        all_users = ", " . join(all_users_list)
+
+        daily_users_list = [f"{user} ({score})" for user, score in self.history.data["top"]["daily"][date_time].items()]
+        daily_users = ", " . join(all_users_list)
+
+        return self._get_response("status", f"Leaderboard stats. All: {all_users} Daily: {daily_users}.", self.history.data['top'])
+
+    def resume(self):
+        if self._get_remaining_rolls() == 0:
+            return self._get_response("resume", "No remaining rolls.", self.history.data[self.username])
+
         date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self._set_started(date_time)
 
@@ -166,11 +189,15 @@ class YahtSea:
         username = self.history.get_active_game_username()
 
         if username is not None:
-            return self._get_response("get_active_game_username", f"YahtSea current username is {username}.", self.history.data[self.username])
+            return self._get_response("get_active_game_username", f"{username}", self.history.data[self.username])
         else:
-            return self._get_response("get_active_game_username", "There are no active YahtSea games.", self.history.data[self.username])
+            return self._get_response("get_active_game_username", "", self.history.data[self.username])
 
     def end_round(self):
+        username = self.history.get_active_game_username()
+        if username != self.username:
+            return self._get_response("roll", "", self.history.data[self.username])
+
         # Check that we are not already ended.
         if self._get_remaining_rolls() == 0:
             return self._get_response("play", "No remaining rolls.", self.history.data[self.username])
@@ -187,11 +214,11 @@ class YahtSea:
 
         winner = ""
         if len(data['current']['roundScores']) == 3:
-            winner = f"Game over - ending score: {sum(data['current']['roundScores'])}"
+            winner = f"Game over! Ending score for {self.username} is {sum(data['current']['roundScores'])} points."
         else:
-            winner = f"Score: {data['current']['roundScores'][-1]}"
+            winner = f"Round {len(data['current']['roundScores'])} of 3 ended. Round score: {data['current']['roundScores'][-1]}. Roll dice again to start the next round."
 
-        return self._get_response("end_round", f"Round {len(data['current']['roundScores'])} ended.\n{winner}", data)
+        return self._get_response("end_round", f"Round {len(data['current']['roundScores'])} of 3 ended.\n{winner}", data)
 
 
     def get_dice_values(self):

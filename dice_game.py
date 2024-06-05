@@ -6,7 +6,7 @@ from yahtsea import YahtSea
 
 debug = False
 
-allowed_actions = ["play", "hold", "roll", "end_round", "status", "get_active_game_username"]
+allowed_actions = ["play", "hold", "roll", "end_round", "resume", "leaderboard", "get_active_game_username"]
 
 # Check if the required arguments are provided
 if len(sys.argv) < 3:
@@ -221,8 +221,10 @@ def main_loop():
         print(yahtsea.hold(target_pieces_as_int))
     elif action.lower() == 'end_round':
         print(yahtsea.end_round())
-    elif action.lower() == 'status':
-        print(yahtsea.status())
+    elif action.lower() == 'resume':
+        print(yahtsea.resume())
+    elif action.lower() == 'leaderboard':
+        print(yahtsea.leaderboard())
     elif action.lower() == 'get_active_game_username':
         print(yahtsea.get_active_game_username())
 

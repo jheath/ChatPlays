@@ -3,5 +3,5 @@
     "broadcaster_user_id": "670033413",
     "client_id": "<this is the id of your Twitch App>", 
     "client_secret": "<this is the secret of your Twitch App>",
-    "token": "<this token come from OAuth>"
+    "yahtSeaRewardId": "<replace with reward redemption ID>"
 }

@@ -6,7 +6,7 @@ function subscribe(payload) {
     {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer '+CONFIG.token,
+            'Authorization': 'Bearer ' + token,
             'Client-Id': CONFIG.client_id
         }
     })
@@ -15,7 +15,7 @@ function subscribe(payload) {
             console.log(' Subscribed to: %s', _.get(response, 'data.data.0.type'));
         }
         else {
-            console.log('%j',response.data);
+            console.log('%j', response.data);
         }
     })
     .catch(function (error) {
@@ -43,14 +43,39 @@ function getToken() {
     });
 }
 
+function postMessage(message) {
+    const payload = {
+        "broadcaster_id": CONFIG.broadcaster_user_id,
+        "sender_id": CONFIG.broadcaster_user_id,
+        "message": message
+    }
+
+    axios.post('https://api.twitch.tv/helix/chat/messages', payload,
+    {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+            'Client-Id': CONFIG.client_id
+        }
+    })
+    .then(function (response) {
+        console.log('%j',response.data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+}
+
 var settings;
 var CONFIG;
 function init(s) {
     settings = s;
     CONFIG = settings.CONFIG;
+    token = settings.token;
 }
 
 module.exports = {
     init,
-    subscribe
+    subscribe,
+    postMessage
 };
