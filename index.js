@@ -71,8 +71,8 @@ function onBitsRedemption(data) {
 function onChannelPointsRedeption(data) {
     //YahtSea reward ID
     if (data.payload.event.reward?.id === CONFIG.yahtseaRewardId) {
-        if (data.payload.event['user_login']) {
-            yahtSeaChat.processChat('play', data.payload.event['user_login']);
+        if (data.payload.event['user_name']) {
+            yahtSeaChat.processChat('play', data.payload.event['user_name']);
         }
     }
 }
@@ -81,7 +81,7 @@ function onChatMessage(message, tags) {
     //tags['display-name'] //Display Name
     //tags['username'] //username
 
-    yahtSeaChat.processChat(message, tags['username']);
+    yahtSeaChat.processChat(message, tags['display-name']);
 }
 
 // Redirect the user to Twitch for authentication
