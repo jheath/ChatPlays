@@ -47,7 +47,7 @@ client.on('connect', function(connection) {
             else if (_.get(data, 'metadata.message_type') === 'session_keepalive') {
                 //// This is just the PING message we get every 30 seconds. Could be useful to keep track of
                 ////    if we're worried about getting disconnected.
-                console.log('- socket still online -');
+                // console.log('- socket still online -');
             }
             else {
                 //// We shouldn't get here
