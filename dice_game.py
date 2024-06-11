@@ -18,7 +18,7 @@ if len(sys.argv) < 3:
 args = sys.argv
 curUser = args[1]
 action = args[2]
-targets = ''
+targets = []
 if len(args) > 3:
     targets = args[3]
 
@@ -216,8 +216,12 @@ def main_loop():
     elif action.lower() == 'roll':
         print(yahtsea.roll())
     elif action.lower() == 'hold':
-        target_pieces = targets.split(',')
-        target_pieces_as_int = [int(target.strip()) for target in target_pieces]
+        if targets:
+            target_pieces = targets.split(',')
+            target_pieces_as_int = [int(target.strip()) for target in target_pieces if target.strip().isdigit()]
+        else:
+            target_pieces_as_int = []
+
         print(yahtsea.hold(target_pieces_as_int))
     elif action.lower() == 'end_round':
         print(yahtsea.end_round())

@@ -22,9 +22,15 @@ function processCommand(m) {
 	});
 
 	rl.on('line', (input) => {
-		const message = input.trim().toLowerCase();
+		const message = input.trim();
 		if (message === 'launch') {
 			launchPyGame();
+		}
+
+		const regex = /^play (.*)$/;
+		const match = message.match(regex);
+		if (match) {
+			play(match[1])
 		}
 
 		if (message === 'help') {
@@ -35,13 +41,17 @@ function processCommand(m) {
 
 function executeCall(username, action, target, callback) {
 	if (action === 'hold') {
-		target = target.replace(/,| /g, '');
-		if (/^\d+$/.test(target) === false) {
-			return;
-		}
+		if (target !== undefined) {
+			target = target.replace(/,| /g, '');
+			if (/^\d+$/.test(target) === false) {
+				return;
+			}
 
-		const uniqueNumbers = Array.from(new Set(target));
-		target = uniqueNumbers.join(',');
+			const uniqueNumbers = Array.from(new Set(target));
+			target = uniqueNumbers.join(',');
+		} else {
+			target  = '';
+		}
 	}
 
 	if (
@@ -74,10 +84,17 @@ function launchPyGame() {
 	});
 }
 
+function play(username) {
+	execFile('python', ['dice_game.py', username, 'play'], (error, stdout, stderr) => {
+		//nothing to do here
+	});
+}
+
 function help() {
 	process.stdout.write(
 	`launch - Launches YahtSeaPyGame application.
-	reset [username] - Resets the game for the specified user.\n`
+	reset [username] - Resets the game for the specified user.\n
+	play [username] - Resets the game for the specified user.\n`
 	);
 }
 

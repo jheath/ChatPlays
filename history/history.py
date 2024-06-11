@@ -2,7 +2,7 @@ import json
 import os
 import sys
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class History:
     """
@@ -60,30 +60,38 @@ class History:
         self.data[username] = self.load_file(user_template)
         self.save_file()
 
-    def get_active_game_username(self):
+    def get_active_game_users(self):
         date_time = datetime.now()
 
-        oldest_date = None
-        oldest_key = None
+        # Filter users based on the given rules
+        valid_users = {}
 
         # TODO - this is an annoying hack to get around the fact that the data is not always a dictionary
         if not hasattr(self, 'data') or not isinstance(self.data, dict):
-            return None
+            return {}
 
         for key, value in self.data.items():
-            if "current" in value and "started" in value["current"] and value["current"]["started"] != "":
-                game_started_date = value["current"]["started"]
-                game_started_date_object = datetime.strptime(game_started_date, "%Y-%m-%d %H:%M:%S")
+            if "current" in value:
+                if "started" in value["current"] and value["current"]["started"] != "":
+                    if "updated" in value["current"] and value["current"]["updated"] != "":
+                        if "remainingRolls" in value["current"]:
+                            game_started_date = value["current"]["started"]
+                            game_started_date_object = datetime.strptime(game_started_date, "%Y-%m-%d %H:%M:%S")
 
-                game_updated_date = value["current"]["updated"]
-                game_updated_date_object = datetime.strptime(game_started_date, "%Y-%m-%d %H:%M:%S")
+                            game_updated_date = value["current"]["updated"]
+                            game_updated_date_object = datetime.strptime(game_updated_date, "%Y-%m-%d %H:%M:%S")
 
-                time_difference = date_time - game_updated_date_object
+                            time_difference = date_time - game_updated_date_object
 
-                if oldest_date is None or game_started_date < oldest_date:
-                    # AFK check - 30 seconds
-                    if (time_difference.total_seconds() < 180):
-                        oldest_date = game_started_date
-                        oldest_key = key
+                            if value["current"]["remainingRolls"] == 0 and time_difference.total_seconds() < 5:
+                                valid_users[game_started_date] = key
+                            elif value["current"]["remainingRolls"] > 0 and time_difference.total_seconds() < 180:
+                                valid_users[game_started_date] = key
+        return valid_users
 
-        return oldest_key
+    def get_active_game_username(self):
+        users = self.get_active_game_users()
+        if len(users) > 0:
+            return next(iter(users.values()))
+        else:
+            return None

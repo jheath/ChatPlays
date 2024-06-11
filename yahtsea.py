@@ -52,7 +52,7 @@ class YahtSea:
 
     def play(self):
         if self._get_remaining_rolls() > 0:
-            return self._get_response("play", "YahtSea game already in progress.", self.history.data[self.username])
+            return self._get_response("play", "YahtSea game already in progress. Resume to continue.", self.history.data[self.username])
 
         # Set the game as started
         date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -119,8 +119,8 @@ class YahtSea:
 
             # End of game
             if len(self._get_round_scores()) == 3:
-                self._set_started("")
-                self._set_updated("")
+#                 self._set_started("")
+#                 self._set_updated("")
 
                 # Sum the round scores to get the total score
                 total_score = sum(self.history.data[self.username]['current']['roundScores'])
@@ -144,7 +144,7 @@ class YahtSea:
     def hold(self, dice_to_hold):
         username = self.history.get_active_game_username()
         if username != self.username:
-            return self._get_response("roll", "", self.history.data[self.username])
+            return self._get_response("hold", "", self.history.data[self.username])
 
         if self._get_remaining_rolls() == 0:
             return self._get_response("hold", "No rolls left.", self.history.data[self.username])
@@ -166,11 +166,13 @@ class YahtSea:
     def leaderboard(self):
         date_time = datetime.now().strftime("%Y-%m-%d")
 
-        all_users_list = [f"{user} ({score})" for user, score in self.history.data["top"]["all"]["users"].items()]
-        all_users = ", " . join(all_users_list)
+        all_users_data = self.history.data.get("top", {}).get("all", {}).get("users", {})
+        all_users_list = [f"{user} ({score})" for user, score in all_users_data.items()]
+        all_users = ", ".join(all_users_list) if all_users_list else "No all time leaders"
 
-        daily_users_list = [f"{user} ({score})" for user, score in self.history.data["top"]["daily"][date_time].items()]
-        daily_users = ", " . join(all_users_list)
+        daily_users_data = self.history.data.get("top", {}).get("daily", {}).get(date_time, {})
+        daily_users_list = [f"{user} ({score})" for user, score in daily_users_data.items()]
+        daily_users = ", ".join(daily_users_list) if daily_users_list else "No daily leaders"
 
         return self._get_response("status", f"Leaderboard stats. All: {all_users}. Daily: {daily_users}.", self.history.data['top'])
 
@@ -179,11 +181,14 @@ class YahtSea:
             return self._get_response("resume", "Game over. Redeem YahtSea reward to play again.", self.history.data[self.username])
 
         date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self._set_started(date_time)
+        self._set_updated(date_time)
 
         self._save_state()
 
         return self._get_response("status", f"YahtSea game resumed for {self.username}.", self.history.data[self.username])
+
+    def get_active_game_users(self):
+        return self._get_response("get_active_game_users", self.history.get_active_game_users(), self.history.data[self.username])
 
     def get_active_game_username(self):
         username = self.history.get_active_game_username()
@@ -202,6 +207,9 @@ class YahtSea:
         if self._get_remaining_rolls() == 0:
             return self._get_response("play", "No rolls left.", self.history.data[self.username])
 
+        date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self._set_updated(date_time)
+
         data = self.history.data[self.username]
 
         ### I'm getting tired, this is probably a dumb way to do this
@@ -214,7 +222,7 @@ class YahtSea:
 
         response = ""
         if len(data['current']['roundScores']) == 3:
-            response = f"Game over! {self.username}'s final score is {sum(data['current']['roundScores'])} points."
+            response = f"Game over! {self.username} final score is {sum(data['current']['roundScores'])} points."
         else:
             response = f"Round {len(data['current']['roundScores'])} of 3 ended. Score: {data['current']['roundScores'][-1]}. Roll dice to start next round."
 

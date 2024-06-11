@@ -18,7 +18,7 @@ class DiceUI:
         self.active = value
 
     def draw(self):
-        self.die = pygame.draw.rect(self.screen, (255, 255, 255), [self.x_pos, self.y_pos, 100, 100], 0, 5)
+        self.die = pygame.draw.rect(self.screen, (255, 255, 255), [self.x_pos, self.y_pos, 100, 100], 0, 10)
         if self.number == 1:
             pygame.draw.circle(self.screen, (0, 0, 0), (self.x_pos + 50, self.y_pos + 50), 10)
         if self.number == 2:
@@ -47,4 +47,4 @@ class DiceUI:
             pygame.draw.circle(self.screen, (0, 0, 0), (self.x_pos + 20, self.y_pos + 80), 10)
             pygame.draw.circle(self.screen, (0, 0, 0), (self.x_pos + 80, self.y_pos + 20), 10)
         if self.active:
-            pygame.draw.rect(self.screen, (20, 20, 20), [self.x_pos, self.y_pos, 100, 100], 5, 5)
+            pygame.draw.rect(self.screen, (20, 20, 20), [self.x_pos, self.y_pos, 100, 100], 5, 10)
