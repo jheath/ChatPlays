@@ -47,12 +47,12 @@ function onBitsRedemption(data) {
 
 ////
 function onChannelPointsRedeption(data) {
-
+    console.log('%j',data);
 }
 
 function onChatMessage(message, tags) {
-    console.log(tags);
-    console.log(message);
+    //console.log(tags);
+    //console.log(message);
 }
 
 
