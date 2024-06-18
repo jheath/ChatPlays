@@ -81,6 +81,11 @@ function onChatMessage(message, tags) {
     //tags['display-name'] //Display Name
     //tags['username'] //username
 
+    //disable this to test, by providing the term "play" in chat.
+    if (message.toLowerCase() === 'play') {
+        return;
+    }
+
     yahtSeaChat.processChat(message, tags['display-name']);
 }
 

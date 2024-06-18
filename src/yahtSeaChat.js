@@ -3,11 +3,6 @@ const { execFile } = require('child_process');
 function processChat(message, username) {
 	const [action, target] = message.trim().toLowerCase().split(' ', 2);
 
-	//disable this to test, by providing the term "play" in chat.
-	if (action === 'play') {
-		return;
-	}
-
 	executeCall(username, action, target, (error, result) => {
 		process.stdout.write(`${result.message}\n`);
 	});
