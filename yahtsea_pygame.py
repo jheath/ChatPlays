@@ -1,6 +1,6 @@
 import random
 import pygame
-from datetime import date
+from datetime import date, datetime
 from dice.dice_ui import DiceUI
 from history.history import History
 
@@ -80,8 +80,12 @@ while running:
     if len(users) > 0:
         user_data_time, username = next(iter(users.items()))
 
-    pygame.draw.rect(screen, (0, 255, 0), [0, 0, WIDTH, HEIGHT])
+    if username != None and history.data[username]['current']['updated'] == "":
+        date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        history.data[username]['current']['updated'] = date_time
+        history.save_file()
 
+    pygame.draw.rect(screen, (0, 255, 0), [0, 0, WIDTH, HEIGHT])
 
     if username != None:
         if len(history.data[username]['current']['roundScores']) == 3 and history.data[username]['current']['remainingRolls'] == 0:
