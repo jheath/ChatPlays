@@ -73,21 +73,26 @@ class History:
         for key, value in self.data.items():
             if "current" in value:
                 if "started" in value["current"] and value["current"]["started"] != "":
-                    if "updated" in value["current"] and value["current"]["updated"] != "":
+                    if "updated" in value["current"]:
                         if "remainingRolls" in value["current"]:
                             game_started_date = value["current"]["started"]
                             game_started_date_object = datetime.strptime(game_started_date, "%Y-%m-%d %H:%M:%S")
 
-                            game_updated_date = value["current"]["updated"]
-                            game_updated_date_object = datetime.strptime(game_updated_date, "%Y-%m-%d %H:%M:%S")
+                            if value["current"]["updated"] != "":
+                                game_updated_date = value["current"]["updated"]
+                                game_updated_date_object = datetime.strptime(game_updated_date, "%Y-%m-%d %H:%M:%S")
 
-                            time_difference = date_time - game_updated_date_object
+                                time_difference = date_time - game_updated_date_object
 
-                            if value["current"]["remainingRolls"] == 0 and time_difference.total_seconds() < 5:
-                                valid_users[game_started_date] = key
-                            elif value["current"]["remainingRolls"] > 0 and time_difference.total_seconds() < 180:
-                                valid_users[game_started_date] = key
-        return valid_users
+                                if value["current"]["remainingRolls"] == 0 and time_difference.total_seconds() < 5:
+                                    valid_users[game_started_date] = key
+                                elif value["current"]["remainingRolls"] > 0 and time_difference.total_seconds() < 180:
+                                    valid_users[game_started_date] = key
+                            else:
+                                if value["current"]["remainingRolls"] > 0:
+                                    valid_users[game_started_date] = key
+
+        return dict(sorted(valid_users.items(), key=lambda item: item[0]))
 
     def get_active_game_username(self):
         users = self.get_active_game_users()
