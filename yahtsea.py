@@ -57,7 +57,11 @@ class YahtSea:
         # Set the game as started
         date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self._set_started(date_time)
-        self._set_updated(date_time)
+
+        if self.history.get_active_game_username() is None:
+            self._set_updated(date_time)
+        else:
+            self._set_updated("")
 
         # Reset the round scores each rounds score will be appended here
         self._set_round_scores([])
@@ -71,7 +75,11 @@ class YahtSea:
 
         self._save_state()
 
-        return self._get_response("play", f"YahtSea game started. Dice values: {self.history.data[self.username]['current']['dice']}", self.history.data[self.username])
+        message = f"YahtSea game started. Dice values: {self.history.data[self.username]['current']['dice']}"
+        if self.history.get_active_game_username() is None:
+            message = f"YahtSea game queued."
+
+        return self._get_response("play", message, self.history.data[self.username])
 
     def roll(self):
         username = self.history.get_active_game_username()
@@ -180,15 +188,29 @@ class YahtSea:
         if self._get_remaining_rolls() == 0:
             return self._get_response("resume", "Game over. Redeem YahtSea reward to play again.", self.history.data[self.username])
 
+        active_users = self.history.get_active_game_users()
+        if len(active_users) > 0:
+            sorted_items = sorted(active_users.items(), key=lambda item: item[0])
+            current_username = sorted_items[0][1]
+            if (current_username == self.username):
+                return self._get_response("resume", "", self.history.data[self.username])
+
         date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self._set_started(date_time)
+
+        message = f"YahtSea game resumed for {self.username}."
         self._set_updated(date_time)
+        if len(active_users) > 0:
+            message = f"YahtSea game added to queue for {self.username}."
+            self._set_updated("")
 
         self._save_state()
 
-        return self._get_response("status", f"YahtSea game resumed for {self.username}.", self.history.data[self.username])
+        return self._get_response("status", message, self.history.data[self.username])
 
     def get_active_game_users(self):
-        return self._get_response("get_active_game_users", self.history.get_active_game_users(), self.history.data[self.username])
+        active_users = self.history.get_active_game_users()
+        return self._get_response("get_active_game_users", active_users, self.history.data[self.username])
 
     def get_active_game_username(self):
         username = self.history.get_active_game_username()
