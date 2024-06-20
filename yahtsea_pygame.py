@@ -108,11 +108,13 @@ while running:
             pygame.draw.rect(screen, (255, 255, 255), [100, 100, WIDTH - 200, HEIGHT - 180])
             pygame.draw.rect(screen, (0, 0, 0), [95, 95, WIDTH - 190, HEIGHT - 170], 5, 8)
 
-            game_over_text = large_font.render(f"Round {len(history.data[username]['current']['roundScores'])} completed", True, (0, 0, 0))
+            round = len(history.data[username]['current']['roundScores'])
+
+            game_over_text = large_font.render(f"Round {round} completed", True, (0, 0, 0))
             rect = game_over_text.get_rect(center=(WIDTH / 2, (HEIGHT / 2) - 28))
             screen.blit(game_over_text, rect)
 
-            game_over_text = huge_font.render(f"{sum(history.data[username]['current']['roundScores'])} Points Scored", True, (0, 0, 0))
+            game_over_text = huge_font.render(f"{history.data[username]['current']['roundScores'][round - 1]} Points Scored", True, (0, 0, 0))
             rect = game_over_text.get_rect(center=(WIDTH / 2, (HEIGHT / 2) + 10))
             screen.blit(game_over_text, rect)
 
